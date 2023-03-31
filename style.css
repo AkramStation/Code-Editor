@@ -1,0 +1,20 @@
+#editor {
+  border: 1px solid #ccc;
+  height: 300px;
+  width: 50%;
+  margin: 0 auto;
+  font-size: 16px;
+  text-align: center;
+}
+
+#run-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
