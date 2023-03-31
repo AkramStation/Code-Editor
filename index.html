@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Code Editor</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      #editor {
+        border: 1px solid #ccc;
+        height: 300px;
+        width: 50%;
+        font-size: 16px;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      #run-button {
+        display: block;
+        padding: 10px 20px;
+        background-color: green;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #output {
+        width: 50%;
+        text-align: center;
+      }
+
+    </style>
+</head>
+<body>
+    <textarea id="editor"></textarea>
+    <button id="run-button" onclick="runCode()">Run Code</button>
+    <pre id="output"></pre>
+    <script>
+        function runCode() {
+            var editor = document.getElementById("editor");
+            var code = editor.value;
+            var output = document.getElementById("output");
+            output.innerHTML = "";
+            console.log = function(msg) {
+                output.innerHTML += msg + "\n";
+            };
+            eval(code);
+        }
+    </script>
+   <script src="https://cdn.jsdelivr.net/npm/discord.js"></script>
+</body>
+</html>
+
