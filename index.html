@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Code Editor with Semantic UI</title>
+  <!-- تضمين Semantic UI CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
   <style>
     /* استخدم الخط Cascadia Code */
     @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code&display=swap');
@@ -9,24 +12,18 @@
       margin: 0; /* إزالة هوامش الصفحة */
     }
 
-    /* ألوان مخصصة للفريموورك */
-    :root {
-      --primary-color: #151515;
-      --secondary-color: #0f0f0f;
-    }
-
     /* التصميم الجديد باستخدام Semantic UI */
     .container {
       display: flex;
       height: 100vh;
-      background-color: var(--primary-color);
-      color: white;
+      background-color: #f5f5f5;
+      color: black;
     }
 
     .sidebar {
       width: 250px;
       padding: 10px;
-      background-color: var(--secondary-color);
+      background-color: #f9f9f9;
       overflow-y: auto;
     }
 
@@ -36,53 +33,10 @@
       flex-direction: column;
     }
 
-    .explorer-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px;
-      background-color: var(--primary-color);
-    }
-
-    .explorer-header span {
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .explorer-options {
-      cursor: pointer;
-    }
-
-    .explorer-footer {
-      padding: 8px;
-      background-color: var(--primary-color);
-    }
-
-    .explorer-menu {
-      color: white;
-      background-color: var(--secondary-color);
-    }
-
-    .explorer-body {
-      padding: 10px;
-      overflow-y: auto;
-    }
-
-    .explorer-file,
-    .explorer-folder {
-      padding: 5px;
-      cursor: pointer;
-    }
-
-    .explorer-file:hover,
-    .explorer-folder:hover {
-      background-color: var(--secondary-color);
-    }
-
     .editor-tabs {
       display: flex;
       padding: 8px;
-      background-color: var(--primary-color);
+      background-color: #f9f9f9;
       overflow-x: auto;
     }
 
@@ -92,7 +46,7 @@
     }
 
     .tab.active {
-      background-color: var(--secondary-color);
+      background-color: #e0e0e0;
     }
 
     .editor-container {
@@ -106,7 +60,7 @@
 
     .terminal-container {
       padding: 10px;
-      background-color: var(--primary-color);
+      background-color: #f9f9f9;
     }
 
     .terminal-header {
@@ -118,42 +72,25 @@
     .terminal-container textarea {
       width: 100%;
       height: 200px;
-      background-color: black;
-      color: white;
+      background-color: white;
+      color: black;
       border: none;
       resize: none;
     }
   </style>
-  <!-- تضمين Semantic UI CSS -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
-  >
-  <title>Code Editor</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.js"></script>
 </head>
 <body>
   <div class="container">
     <div class="sidebar">
-      <div class="explorer-container">
-        <div class="explorer-header">
-          <span>Explorer</span>
-          <div class="explorer-options" id="explorer-options" onclick="toggleExplorerMenu()">
-            <span class="option"></span>
-            <span class="option"></span>
-            <span class="option"></span>
+      <div class="ui vertical menu">
+        <div class="item">
+          <div class="header">Explorer</div>
+          <div class="menu">
+            <a class="item" onclick="openFile()">Open File</a>
+            <a class="item" onclick="openFolder()">Open Folder</a>
+            <a class="item" onclick="createNewFolder()">Create New Folder</a>
           </div>
-        </div>
-        <div class="explorer-body" id="explorer-body">
-          <!-- هنا يمكنك وضع أزرار أو قائمة لاستعراض الملفات -->
-        </div>
-        <div class="explorer-footer">
-          <select id="explorer-menu" class="explorer-menu" onchange="handleExplorerOption(this)">
-            <option value="none">Select Python Files</option>
-            <option value="open-file">Open File</option>
-            <option value="open-folder">Open Folder</option>
-            <option value="create-folder">Create New Folder</option>
-          </select>
         </div>
       </div>
     </div>
@@ -165,236 +102,15 @@
         <div id="monaco-editor" class="monaco-editor"></div>
       </div>
       <div class="terminal-container">
-        <div class="terminal-header">
-          <span>Terminal</span>
-        </div>
+        <div class="terminal-header">Terminal</div>
         <textarea id="terminal" readonly></textarea>
       </div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.js"></script>
   <script>
- const codeEditor = document.getElementById('monaco-editor');
-    let monacoEditor;
-    let openedFiles = [];
-    let activeFileIndex = -1;
-
-    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }});
-    window.MonacoEnvironment = { getWorkerUrl: () => proxy };
-    require(['vs/editor/editor.main'], function() {
-      monacoEditor = monaco.editor.create(codeEditor, {
-        value: "",
-        language: "python",
-        theme: "vs-dark",
-        fontSize: 16,
-        fontFamily: 'Cairo, "Courier New", monospace',
-        automaticLayout: true,
-      });
-
-      monacoEditor.onDidChangeModelContent((e) => {
-        const code = monacoEditor.getValue();
-      });
-    });
-
-    function toggleExplorerMenu() {
-      const menu = document.getElementById('explorer-menu');
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function handleExplorerOption(option) {
-      const value = option.value;
-      switch (value) {
-        case 'open-file':
-          openFile();
-          break;
-        case 'open-folder':
-          openFolder();
-          break;
-        case 'create-folder':
-          // أنشئ مجلد جديد
-          break;
-        default:
-          // لا تقم بأي عمل
-          break;
-      }
-    }
-
-    function openFile() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.txt, .py, .js, .ts, .tsx, .rs'; // أضف الامتدادات هنا
-      input.multiple = true;
-      input.onchange = (event) => {
-        const files = event.target.files;
-        for (const file of files) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const content = e.target.result;
-            const fileName = file.name;
-            const fileIndex = openedFiles.findIndex((f) => f.name === fileName);
-            if (fileIndex === -1) {
-              const explorerBody = document.getElementById('explorer-body');
-              const fileItem = document.createElement('div');
-              fileItem.classList.add('explorer-file');
-
-              // تحديث لتخطيط Flex
-              fileItem.style.display = 'flex';
-              fileItem.style.alignItems = 'center';
-
-              const fileNameElement = document.createElement('span');
-              fileNameElement.textContent = fileName;
-              fileNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم الملف
-              fileItem.appendChild(fileNameElement);
-
-              fileItem.onclick = () => {
-                openFileByIndex(openedFiles.findIndex((f) => f.name === fileName));
-              };
-              explorerBody.appendChild(fileItem);
-
-              openedFiles.push({ name: fileName, content: content });
-
-              createTab(fileName);
-            } else {
-              openedFiles[fileIndex].content = content;
-            }
-            monacoEditor.setValue(content);
-            activeFileIndex = openedFiles.length - 1;
-            setActiveTab(activeFileIndex);
-          };
-          reader.readAsText(file);
-        }
-      };
-      input.click();
-    }
-
-    function openFolder() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.webkitdirectory = true;
-      input.multiple = false;
-      input.accept = '.txt, .py, .js, .ts, .tsx, .rs'; // أضف الامتدادات هنا
-      input.onchange = (event) => {
-        const folder = event.target.files[0];
-        displayFolderContents(folder);
-      };
-      input.click();
-    }
-
-    function displayFolderContents(folder) {
-      const folderName = folder.name;
-      const files = folder.webkitEntries || folder.items || [];
-
-      const explorerBody = document.getElementById('explorer-body');
-      const folderItem = document.createElement('div');
-      folderItem.classList.add('explorer-folder');
-
-      // تحديث لتخطيط Flex
-      folderItem.style.display = 'flex';
-      folderItem.style.alignItems = 'center';
-
-      const folderNameElement = document.createElement('span');
-      folderNameElement.textContent = folderName;
-      folderNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم المجلد
-      folderItem.appendChild(folderNameElement);
-
-      explorerBody.appendChild(folderItem);
-
-      for (const file of files) {
-        if (file.isDirectory) {
-          displayFolderContents(file);
-        } else {
-          file.file((f) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const content = e.target.result;
-              const fileName = f.name;
-              const fileIndex = openedFiles.findIndex((file) => file.name === fileName);
-              if (fileIndex === -1) {
-                const fileItem = document.createElement('div');
-                fileItem.classList.add('explorer-file');
-
-                // تحديث لتخطيط Flex
-                fileItem.style.display = 'flex';
-                fileItem.style.alignItems = 'center';
-
-                const fileNameElement = document.createElement('span');
-                fileNameElement.textContent = fileName;
-                fileNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم الملف
-                fileItem.appendChild(fileNameElement);
-
-                fileItem.onclick = () => {
-                  openFileByIndex(openedFiles.findIndex((file) => file.name === fileName));
-                };
-                explorerBody.appendChild(fileItem);
-
-                openedFiles.push({ name: fileName, content: content });
-
-                createTab(fileName);
-              } else {
-                openedFiles[fileIndex].content = content;
-              }
-              monacoEditor.setValue(content);
-              activeFileIndex = openedFiles.length - 1;
-              setActiveTab(activeFileIndex);
-            };
-            reader.readAsText(f);
-          });
-        }
-      }
-    }
-
-    function createTab(fileName) {
-      const tabBar = document.getElementById('editor-tabs');
-
-      // التحقق مما إذا كان الملف مفتوحًا بالفعل في التبويبات
-      const existingTab = Array.from(tabBar.children).find(
-        (tab) => tab.textContent === fileName
-      );
-
-      if (!existingTab) {
-        const tab = document.createElement('div');
-        tab.classList.add('tab');
-        tab.textContent = fileName;
-        tab.onclick = () => {
-          const fileIndex = openedFiles.findIndex((f) => f.name === fileName);
-          openFileByIndex(fileIndex);
-        };
-
-        // تحديث لتخطيط Flex
-        tab.style.display = 'flex';
-        tab.style.alignItems = 'center';
-
-        const fileNameElement = document.createElement('span');
-        fileNameElement.textContent = fileName;
-        fileNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم الملف
-        tab.appendChild(fileNameElement);
-
-        tabBar.appendChild(tab);
-      }
-    }
-
-    function openFileByIndex(index) {
-      const file = openedFiles[index];
-      if (file) {
-        monacoEditor.setValue(file.content);
-        activeFileIndex = index;
-
-        // تحديث العلامة النشطة فقط دون إنشاء نسخ جديدة عند فتح الملف مرة أخرى
-        setActiveTab(activeFileIndex);
-      }
-    }
-
-    function setActiveTab(index) {
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach((tab, i) => {
-        if (i === index) {
-          tab.classList.add('active');
-        } else {
-          tab.classList.remove('active');
-        }
-      });
-    }
-
+    // قم بنسخ الجزء المتعلق بـ Monaco Editor والوظائف هنا
   </script>
 </body>
 </html>
+
