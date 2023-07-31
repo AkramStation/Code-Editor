@@ -9,12 +9,11 @@
   <style>
     body {
       font-family: 'Cascadia Code', monospace;
-      margin: 0; /* إزالة هوامش الصفحة */
-      background-color: #151515; /* لون الخلفية */
-      color: white; /* لون النص */
+      margin: 0;
+      background-color: #151515;
+      color: white;
     }
 
-    /* التصميم الجديد باستخدام Semantic UI */
     .container {
       display: flex;
       height: 100vh;
@@ -25,10 +24,10 @@
     .sidebar {
       width: 250px;
       padding: 10px;
-      background-color: #1f1f1f; /* لون الخلفية الجانبية */
+      background-color: #1f1f1f;
       overflow-y: auto;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* ظلال للجانب الجانبي */
-      border-right: 1px solid #444; /* حدود للجانب الجانبي */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      border-right: 1px solid #444;
     }
 
     .main {
@@ -40,19 +39,19 @@
     .editor-tabs {
       display: flex;
       padding: 8px;
-      background-color: #1f1f1f; /* لون الخلفية لعلامات التبويب */
+      background-color: #1f1f1f;
       overflow-x: auto;
     }
 
     .tab {
       padding: 8px;
       cursor: pointer;
-      border: 1px solid #333; /* حدود لعلامات التبويب */
+      border: 1px solid #333;
     }
 
     .tab.active {
-      background-color: #1a1a1a; /* لون الخلفية لعلامة التبويب النشطة */
-      color: white; /* لون النص في علامة التبويب النشطة */
+      background-color: #1a1a1a;
+      color: white;
     }
 
     .editor-container {
@@ -64,12 +63,11 @@
       height: 100%;
     }
 
-    /* تصميم الأزرار */
     .ui.button.open-file,
     .ui.button.open-folder,
     .ui.button.create-folder {
-      background-color: #fff; /* لون الخلفية للأزرار */
-      color: #151515; /* لون النص في الأزرار */
+      background-color: #fff;
+      color: #151515;
       margin-bottom: 5px;
     }
   </style>
@@ -83,7 +81,6 @@
           <div class="header">Explorer</div>
           <div class="menu">
             <button class="ui button open-file" onclick="openFile()">Open File</button>
-            <!-- لاحظ أنه تم حذف الأكواد الأخرى التي ليست لها فائدة -->
           </div>
         </div>
       </div>
@@ -155,7 +152,7 @@
     function createTab(fileName) {
       const tabBar = document.getElementById('editor-tabs');
 
-      // التحقق مما إذا كان الملف مفتوحًا بالفعل في التبويبات
+            // التحقق مما إذا كان الملف مفتوحًا بالفعل في التبويبات
       const existingTab = Array.from(tabBar.children).find(
         (tab) => tab.textContent === fileName
       );
@@ -165,15 +162,18 @@
         tab.classList.add('tab');
         tab.textContent = fileName;
         tab.onclick = () => {
-  // ... الكود السابق ...
+          const tabIndex = Array.from(tabBar.children).indexOf(tab);
+          openFileByIndex(tabIndex);
+        };
+        tabBar.appendChild(tab);
+      }
+    }
 
     function openFileByIndex(index) {
       const file = openedFiles[index];
       if (file) {
         monacoEditor.setValue(file.content);
         activeFileIndex = index;
-
-        // تحديث العلامة النشطة فقط دون إنشاء نسخ جديدة عند فتح الملف مرة أخرى
         setActiveTab(activeFileIndex);
       }
     }
@@ -195,16 +195,7 @@
         const explorerBody = document.getElementById('explorer-body');
         const folderItem = document.createElement('div');
         folderItem.classList.add('explorer-folder');
-
-        // تحديث لتخطيط Flex
-        folderItem.style.display = 'flex';
-        folderItem.style.alignItems = 'center';
-
-        const folderNameElement = document.createElement('span');
-        folderNameElement.textContent = folderName;
-        folderNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم المجلد
-        folderItem.appendChild(folderNameElement);
-
+        folderItem.textContent = folderName;
         explorerBody.appendChild(folderItem);
       }
     }
