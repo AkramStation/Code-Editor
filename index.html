@@ -52,6 +52,7 @@
 
     .tab.active {
       background-color: #1a1a1a; /* لون الخلفية لعلامة التبويب النشطة */
+      color: white; /* لون النص في علامة التبويب النشطة */
     }
 
     .editor-container {
@@ -61,27 +62,6 @@
 
     .monaco-editor {
       height: 100%;
-    }
-
-    .terminal-container {
-      padding: 10px;
-      background-color: #1f1f1f; /* لون الخلفية للمحطة */
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* ظلال للمحطة */
-    }
-
-    .terminal-header {
-      padding: 8px;
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .terminal-container textarea {
-      width: 100%;
-      height: 200px;
-      background-color: #282828; /* لون الخلفية لمنطقة النص في المحطة */
-      color: white; /* لون النص في المحطة */
-      border: none;
-      resize: none;
     }
 
     /* تصميم الأزرار */
@@ -103,8 +83,7 @@
           <div class="header">Explorer</div>
           <div class="menu">
             <button class="ui button open-file" onclick="openFile()">Open File</button>
-            <button class="ui button open-folder" onclick="openFolder()">Open Folder</button>
-            <button class="ui button create-folder" onclick="createNewFolder()">Create New Folder</button>
+            <!-- لاحظ أنه تم حذف الأكواد الأخرى التي ليست لها فائدة -->
           </div>
         </div>
       </div>
@@ -115,10 +94,6 @@
       </div>
       <div class="editor-container">
         <div id="monaco-editor" class="monaco-editor"></div>
-      </div>
-      <div class="terminal-container">
-        <div class="terminal-header">Terminal</div>
-        <textarea id="terminal" readonly></textarea>
       </div>
     </div>
   </div>
@@ -160,28 +135,9 @@
           reader.onload = (e) => {
             const content = e.target.result;
             const fileName = file.name;
-                        const fileIndex = openedFiles.findIndex((f) => f.name === fileName);
+            const fileIndex = openedFiles.findIndex((f) => f.name === fileName);
             if (fileIndex === -1) {
-              const explorerBody = document.getElementById('explorer-body');
-              const fileItem = document.createElement('div');
-              fileItem.classList.add('explorer-file');
-
-              // تحديث لتخطيط Flex
-              fileItem.style.display = 'flex';
-              fileItem.style.alignItems = 'center';
-
-              const fileNameElement = document.createElement('span');
-              fileNameElement.textContent = fileName;
-              fileNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم الملف
-              fileItem.appendChild(fileNameElement);
-
-              fileItem.onclick = () => {
-                openFileByIndex(openedFiles.findIndex((f) => f.name === fileName));
-              };
-              explorerBody.appendChild(fileItem);
-
               openedFiles.push({ name: fileName, content: content });
-
               createTab(fileName);
             } else {
               openedFiles[fileIndex].content = content;
@@ -194,82 +150,6 @@
         }
       };
       input.click();
-    }
-
-    function openFolder() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.webkitdirectory = true;
-      input.multiple = false;
-      input.accept = '.txt, .py, .js, .ts, .tsx, .rs'; // أضف الامتدادات هنا
-      input.onchange = (event) => {
-        const folder = event.target.files[0];
-        displayFolderContents(folder);
-      };
-      input.click();
-    }
-
-    function displayFolderContents(folder) {
-      const folderName = folder.name;
-      const files = folder.webkitEntries || folder.items || [];
-
-      const explorerBody = document.getElementById('explorer-body');
-      const folderItem = document.createElement('div');
-      folderItem.classList.add('explorer-folder');
-
-      // تحديث لتخطيط Flex
-      folderItem.style.display = 'flex';
-      folderItem.style.alignItems = 'center';
-
-      const folderNameElement = document.createElement('span');
-      folderNameElement.textContent = folderName;
-      folderNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم المجلد
-      folderItem.appendChild(folderNameElement);
-
-      explorerBody.appendChild(folderItem);
-
-      for (const file of files) {
-        if (file.isDirectory) {
-          displayFolderContents(file);
-        } else {
-          file.file((f) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const content = e.target.result;
-              const fileName = f.name;
-              const fileIndex = openedFiles.findIndex((file) => file.name === fileName);
-              if (fileIndex === -1) {
-                const fileItem = document.createElement('div');
-                fileItem.classList.add('explorer-file');
-
-                // تحديث لتخطيط Flex
-                fileItem.style.display = 'flex';
-                fileItem.style.alignItems = 'center';
-
-                const fileNameElement = document.createElement('span');
-                fileNameElement.textContent = fileName;
-                fileNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم الملف
-                fileItem.appendChild(fileNameElement);
-
-                fileItem.onclick = () => {
-                  openFileByIndex(openedFiles.findIndex((file) => file.name === fileName));
-                };
-                explorerBody.appendChild(fileItem);
-
-                openedFiles.push({ name: fileName, content: content });
-
-                createTab(fileName);
-              } else {
-                openedFiles[fileIndex].content = content;
-              }
-              monacoEditor.setValue(content);
-              activeFileIndex = openedFiles.length - 1;
-              setActiveTab(activeFileIndex);
-            };
-            reader.readAsText(f);
-          });
-        }
-      }
     }
 
     function createTab(fileName) {
@@ -285,22 +165,7 @@
         tab.classList.add('tab');
         tab.textContent = fileName;
         tab.onclick = () => {
-          const fileIndex = openedFiles.findIndex((f) => f.name === fileName);
-          openFileByIndex(fileIndex);
-        };
-
-        // تحديث لتخطيط Flex
-        tab.style.display = 'flex';
-        tab.style.alignItems = 'center';
-
-        const fileNameElement = document.createElement('span');
-        fileNameElement.textContent = fileName;
-        fileNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم الملف
-        tab.appendChild(fileNameElement);
-
-        tabBar.appendChild(tab);
-      }
-    }
+  // ... الكود السابق ...
 
     function openFileByIndex(index) {
       const file = openedFiles[index];
@@ -312,8 +177,6 @@
         setActiveTab(activeFileIndex);
       }
     }
-
-  // ... الكود السابق ...
 
     function setActiveTab(index) {
       const tabs = document.querySelectorAll('.tab');
