@@ -4,9 +4,9 @@
   <title>Code Editor with Semantic UI</title>
   <!-- تضمين Semantic UI CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <!-- استخدم الخط Cascadia Code -->
+  <link href="https://fonts.googleapis.com/css2?family=Cascadia+Code&display=swap" rel="stylesheet">
   <style>
-    /* استخدم الخط Cascadia Code */
-    @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code&display=swap');
     body {
       font-family: 'Cascadia Code', monospace;
       margin: 0; /* إزالة هوامش الصفحة */
@@ -109,8 +109,41 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.js"></script>
   <script>
-    // قم بنسخ الجزء المتعلق بـ Monaco Editor والوظائف هنا
+    const codeEditor = document.getElementById('monaco-editor');
+    let monacoEditor;
+    let openedFiles = [];
+    let activeFileIndex = -1;
+
+    require.config({
+      paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }
+    });
+
+    require(['vs/editor/editor.main'], function() {
+      monacoEditor = monaco.editor.create(codeEditor, {
+        value: "",
+        language: "python",
+        theme: "vs-dark",
+        fontSize: 16,
+        fontFamily: 'Cascadia Code, monospace',
+        automaticLayout: true,
+      });
+
+      monacoEditor.onDidChangeModelContent((e) => {
+        const code = monacoEditor.getValue();
+      });
+    });
+
+    function openFile() {
+      // افتح ملف
+    }
+
+    function openFolder() {
+      // افتح مجلد
+    }
+
+    function createNewFolder() {
+      // قم بإنشاء مجلد جديد
+    }
   </script>
 </body>
 </html>
-
