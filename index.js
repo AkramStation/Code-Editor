@@ -5,8 +5,10 @@ const fs = require('fs');
 
 // دالة لفتح ملف وعرضه في مكان كتابة الأكواد
 function openFileInEditor(filePath) {
-    fs.readFile(filePath, 'utf-8', (err, data) => {
+    fs.readFile(filePath, 'utf-8', (err, data)=> {
         if (err) {
             dialog.showErrorBox
-
-console.log('Hello')
+        }
+    }
+}
+console.log('Hello');
