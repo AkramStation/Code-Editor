@@ -52,6 +52,30 @@
       </div>
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.js"></script>
+<script>
+  const codeEditor = document.getElementById('monaco-editor');
+  let monacoEditor;
+  let openedFiles = [];
+  let activeFileIndex = -1;
+
+  require.config({
+    paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }
+  });
+
+  // هنا نقوم بتحميل مكتبة اللغات وبعد ذلك نبدأ بإنشاء المحرر
+  require(['vs/editor/editor.main', 'vs/language/typescript/monaco.contribution', 'vs/basic-languages/monaco.contribution'], function () {
+    monaco.languages.getLanguages(); // للتأكد من تحميل جميع لغات البرمجة
+
+    monacoEditor = monaco.editor.create(codeEditor, {
+      value: "",
+      language: "python",
+      theme: "vs-dark",
+      fontSize: 16,
+      fontFamily: 'Cairo, "Courier New", monospace',
+      automaticLayout: true,
+    });
+          </script>
   <script src="app.js"></script>
   <script>
     const codeEditor = document.getElementById('monaco-editor');
