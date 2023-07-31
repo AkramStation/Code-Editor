@@ -1,6 +1,6 @@
 # Code Editor (Open Source)
     
-## For Installing Use : https://github.com/AkramStation/Code-Editor.git
+## For Installing Use : git clone https://github.com/AkramStation/Code-Editor.git
 ### Paste `npm starts` In The Terminal To Run The app
 - Make Sure You Are Installed `Electron`
 - If Any Problem Just Call Me
