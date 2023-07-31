@@ -1,20 +1,206 @@
-#editor {
-  border: 1px solid #ccc;
-  height: 300px;
-  width: 50%;
-  margin: 0 auto;
-  font-size: 16px;
-  text-align: center;
+/* styles.css */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Cairo', Arial, sans-serif; /* استخدام خط Cairo والخطوط البديلة */
+  background-color: #1e1e1e;
+  color: #d4d4d4;
 }
 
-#run-button {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
-  background-color: green;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #252526; /* تحديث لون الـ Sidebar */
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #555; /* إضافة border بين الـ Sidebar والـ Main */
+}
+
+.explorer-container {
+  flex: 1;
+  padding: 8px;
+}
+
+.explorer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.explorer-header span {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.explorer-options {
   cursor: pointer;
+}
+
+.option {
+  width: 6px;
+  height: 6px;
+  background-color: #d4d4d4;
+  margin: 2px;
+  border-radius: 50%;
+}
+
+.explorer-body {
+  flex: 1;
+  background-color: #373737; /* تحديث لون الـ Explorer Body */
+  padding: 8px;
+  overflow-y: auto;
+}
+
+.explorer-footer {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* تحديث لجعل الأزرار مُحاطة بالتساوي */
+}
+
+.explorer-footer select {
+  background-color: #373737; /* تحديث لون الـ Explorer Menu */
+  color: #d4d4d4;
+  padding: 4px;
+  border: none;
+  outline: none;
+  margin-right: 8px;
+}
+
+.explorer-footer button {
+  background-color: #007acc;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+/* تحديث للأزرار عندما يتم تحديدها */
+.explorer-footer button:hover {
+  background-color: #005d99;
+}
+
+.explorer-footer button:active {
+  background-color: #00394d;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.editor-header {
+  background-color: #333; /* تحديث لون الـ Editor Header */
+  color: #d4d4d4;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 8px;
+}
+
+#monaco-editor {
+  flex: 1;
+  border: 1px solid #555; /* إضافة box border للـ Editor */
+  border-radius: 4px; /* تحديد شكل حواف الـ Editor */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* إضافة ظل للـ Editor */
+}
+
+.terminal-container {
+  height: 200px;
+  background-color: #1e1e1e; /* تحديث لون الـ Terminal Container */
+  padding: 8px;
+  border: 1px solid #555; /* إضافة box border للـ Terminal */
+  border-radius: 4px; /* تحديد شكل حواف الـ Terminal */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* إضافة ظل للـ Terminal */
+}
+
+.terminal-header {
+  background-color: #333; /* تحديث لون الـ Terminal Header */
+  color: #d4d4d4;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 8px;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 25%;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-tabs {
+  display: flex;
+  background-color: #333;
+  padding: 5px;
+}
+
+.tab {
+  padding: 5px 10px;
+  margin-right: 5px;
+  background-color: #444;
+  color: #fff;
+  cursor: pointer;
+  font-family: 'Cascadia Code', monospace; /* استخدام خط Cascadia Code */
+}
+
+.tab.active {
+  background-color: #555;
+}
+
+.editor-container {
+  flex: 1;
+}
+
+.monaco-editor {
+  height: calc(100% - 30px); /* تعديل ارتفاع المحرر لاحتواء التبويبات */
+}
+
+/* أنماط للطرفية */
+.terminal-container {
+  width: 100%;
+  height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+#terminal {
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  background-color: #2b2b2b;
+  color: #f0f0f0;
+  font-family: 'Cascadia Code', monospace;
+  font-size: 14px;
+  border: none;
+  resize: none;
+}
+
+#terminal:focus {
+  outline: none;
 }
