@@ -6,10 +6,130 @@
     @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code&display=swap');
     body {
       font-family: 'Cascadia Code', monospace;
+      margin: 0; /* إزالة هوامش الصفحة */
+    }
+
+    /* ألوان مخصصة للفريموورك */
+    :root {
+      --primary-color: #151515;
+      --secondary-color: #0f0f0f;
+    }
+
+    /* التصميم الجديد باستخدام Semantic UI */
+    .container {
+      display: flex;
+      height: 100vh;
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .sidebar {
+      width: 250px;
+      padding: 10px;
+      background-color: var(--secondary-color);
+      overflow-y: auto;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .explorer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      background-color: var(--primary-color);
+    }
+
+    .explorer-header span {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .explorer-options {
+      cursor: pointer;
+    }
+
+    .explorer-footer {
+      padding: 8px;
+      background-color: var(--primary-color);
+    }
+
+    .explorer-menu {
+      color: white;
+      background-color: var(--secondary-color);
+    }
+
+    .explorer-body {
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    .explorer-file,
+    .explorer-folder {
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .explorer-file:hover,
+    .explorer-folder:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .editor-tabs {
+      display: flex;
+      padding: 8px;
+      background-color: var(--primary-color);
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background-color: var(--secondary-color);
+    }
+
+    .editor-container {
+      flex: 1;
+      position: relative;
+    }
+
+    .monaco-editor {
+      height: 100%;
+    }
+
+    .terminal-container {
+      padding: 10px;
+      background-color: var(--primary-color);
+    }
+
+    .terminal-header {
+      padding: 8px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .terminal-container textarea {
+      width: 100%;
+      height: 200px;
+      background-color: black;
+      color: white;
+      border: none;
+      resize: none;
     }
   </style>
+  <!-- تضمين Semantic UI CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+  >
   <title>Code Editor</title>
-  <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.js"></script>
 </head>
 <body>
@@ -28,7 +148,7 @@
           <!-- هنا يمكنك وضع أزرار أو قائمة لاستعراض الملفات -->
         </div>
         <div class="explorer-footer">
-          <select id="explorer-menu" onchange="handleExplorerOption(this)">
+          <select id="explorer-menu" class="explorer-menu" onchange="handleExplorerOption(this)">
             <option value="none">Select Python Files</option>
             <option value="open-file">Open File</option>
             <option value="open-folder">Open Folder</option>
@@ -53,32 +173,8 @@
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.js"></script>
-<script>
-  const codeEditor = document.getElementById('monaco-editor');
-  let monacoEditor;
-  let openedFiles = [];
-  let activeFileIndex = -1;
-
-  require.config({
-    paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }
-  });
-
-  // هنا نقوم بتحميل مكتبة اللغات وبعد ذلك نبدأ بإنشاء المحرر
-  require(['vs/editor/editor.main', 'vs/language/typescript/monaco.contribution', 'vs/basic-languages/monaco.contribution'], function () {
-    monaco.languages.getLanguages(); // للتأكد من تحميل جميع لغات البرمجة
-
-    monacoEditor = monaco.editor.create(codeEditor, {
-      value: "",
-      language: "python",
-      theme: "vs-dark",
-      fontSize: 16,
-      fontFamily: 'Cairo, "Courier New", monospace',
-      automaticLayout: true,
-    });
-          </script>
-  <script src="app.js"></script>
   <script>
-    const codeEditor = document.getElementById('monaco-editor');
+ const codeEditor = document.getElementById('monaco-editor');
     let monacoEditor;
     let openedFiles = [];
     let activeFileIndex = -1;
@@ -298,6 +394,7 @@
         }
       });
     }
+
   </script>
 </body>
 </html>
