@@ -1,11 +1,29 @@
-/* styles.css */
+/* استخدم الخط Cascadia Code */
+@import url('https://fonts.googleapis.com/css2?family=Cascadia+Code&display=swap');
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Cairo', Arial, sans-serif; /* استخدام خط Cairo والخطوط البديلة */
-  background-color: #1e1e1e;
-  color: #d4d4d4;
+  font-family: 'Cascadia Code', monospace;
+  background-color: #151515;
+  color: #e0e0e0;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #0f0f0f;
+  padding: 16px;
+  color: #e0e0e0;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #151515;
 }
 
 .container {
