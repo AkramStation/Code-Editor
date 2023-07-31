@@ -1,62 +1,279 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="style.css">
-    <meta charset="UTF-8">
-    <title>Code Editor</title>
-    <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-
-      #editor {
-        border: 1px solid #ccc;
-        height: 300px;
-        width: 50%;
-        font-size: 16px;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-
-      #run-button {
-        display: block;
-        padding: 10px 20px;
-        background-color: green;
-        color: white;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-
-      #output {
-        width: 50%;
-        text-align: center;
-      }
-
-    </style>
+  <style>
+    /* استخدم الخط Cascadia Code */
+    @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code&display=swap');
+    body {
+      font-family: 'Cascadia Code', monospace;
+    }
+  </style>
+  <title>Code Editor</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.js"></script>
 </head>
 <body>
-    <textarea id="editor"></textarea>
-    <button id="run-button" onclick="runCode()">Run Code</button>
-    <pre id="output"></pre>
-    <script>
-        function runCode() {
-            var editor = document.getElementById("editor");
-            var code = editor.value;
-            var output = document.getElementById("output");
-            output.innerHTML = "";
-            console.log = function(msg) {
-                output.innerHTML += msg + "\n";
-            };
-            eval(code);
+  <div class="container">
+    <div class="sidebar">
+      <div class="explorer-container">
+        <div class="explorer-header">
+          <span>Explorer</span>
+          <div class="explorer-options" id="explorer-options" onclick="toggleExplorerMenu()">
+            <span class="option"></span>
+            <span class="option"></span>
+            <span class="option"></span>
+          </div>
+        </div>
+        <div class="explorer-body" id="explorer-body">
+          <!-- هنا يمكنك وضع أزرار أو قائمة لاستعراض الملفات -->
+        </div>
+        <div class="explorer-footer">
+          <select id="explorer-menu" onchange="handleExplorerOption(this)">
+            <option value="none">Select Python Files</option>
+            <option value="open-file">Open File</option>
+            <option value="open-folder">Open Folder</option>
+            <option value="create-folder">Create New Folder</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="editor-tabs" id="editor-tabs">
+        <!-- هنا سنضيف tabs الملفات المفتوحة -->
+      </div>
+      <div class="editor-container">
+        <div id="monaco-editor" class="monaco-editor"></div>
+      </div>
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <span>Terminal</span>
+        </div>
+        <textarea id="terminal" readonly></textarea>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+  <script>
+    const codeEditor = document.getElementById('monaco-editor');
+    let monacoEditor;
+    let openedFiles = [];
+    let activeFileIndex = -1;
+
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }});
+    window.MonacoEnvironment = { getWorkerUrl: () => proxy };
+    require(['vs/editor/editor.main'], function() {
+      monacoEditor = monaco.editor.create(codeEditor, {
+        value: "",
+        language: "python",
+        theme: "vs-dark",
+        fontSize: 16,
+        fontFamily: 'Cairo, "Courier New", monospace',
+        automaticLayout: true,
+      });
+
+      monacoEditor.onDidChangeModelContent((e) => {
+        const code = monacoEditor.getValue();
+      });
+    });
+
+    function toggleExplorerMenu() {
+      const menu = document.getElementById('explorer-menu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function handleExplorerOption(option) {
+      const value = option.value;
+      switch (value) {
+        case 'open-file':
+          openFile();
+          break;
+        case 'open-folder':
+          openFolder();
+          break;
+        case 'create-folder':
+          // أنشئ مجلد جديد
+          break;
+        default:
+          // لا تقم بأي عمل
+          break;
+      }
+    }
+
+    function openFile() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.txt, .py, .js, .ts, .tsx, .rs'; // أضف الامتدادات هنا
+      input.multiple = true;
+      input.onchange = (event) => {
+        const files = event.target.files;
+        for (const file of files) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const content = e.target.result;
+            const fileName = file.name;
+            const fileIndex = openedFiles.findIndex((f) => f.name === fileName);
+            if (fileIndex === -1) {
+              const explorerBody = document.getElementById('explorer-body');
+              const fileItem = document.createElement('div');
+              fileItem.classList.add('explorer-file');
+
+              // تحديث لتخطيط Flex
+              fileItem.style.display = 'flex';
+              fileItem.style.alignItems = 'center';
+
+              const fileNameElement = document.createElement('span');
+              fileNameElement.textContent = fileName;
+              fileNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم الملف
+              fileItem.appendChild(fileNameElement);
+
+              fileItem.onclick = () => {
+                openFileByIndex(openedFiles.findIndex((f) => f.name === fileName));
+              };
+              explorerBody.appendChild(fileItem);
+
+              openedFiles.push({ name: fileName, content: content });
+
+              createTab(fileName);
+            } else {
+              openedFiles[fileIndex].content = content;
+            }
+            monacoEditor.setValue(content);
+            activeFileIndex = openedFiles.length - 1;
+            setActiveTab(activeFileIndex);
+          };
+          reader.readAsText(file);
         }
-    </script>
-   <script src="https://cdn.jsdelivr.net/npm/discord.js"></script>
+      };
+      input.click();
+    }
+
+    function openFolder() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.webkitdirectory = true;
+      input.multiple = false;
+      input.accept = '.txt, .py, .js, .ts, .tsx, .rs'; // أضف الامتدادات هنا
+      input.onchange = (event) => {
+        const folder = event.target.files[0];
+        displayFolderContents(folder);
+      };
+      input.click();
+    }
+
+    function displayFolderContents(folder) {
+      const folderName = folder.name;
+      const files = folder.webkitEntries || folder.items || [];
+
+      const explorerBody = document.getElementById('explorer-body');
+      const folderItem = document.createElement('div');
+      folderItem.classList.add('explorer-folder');
+
+      // تحديث لتخطيط Flex
+      folderItem.style.display = 'flex';
+      folderItem.style.alignItems = 'center';
+
+      const folderNameElement = document.createElement('span');
+      folderNameElement.textContent = folderName;
+      folderNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم المجلد
+      folderItem.appendChild(folderNameElement);
+
+      explorerBody.appendChild(folderItem);
+
+      for (const file of files) {
+        if (file.isDirectory) {
+          displayFolderContents(file);
+        } else {
+          file.file((f) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const content = e.target.result;
+              const fileName = f.name;
+              const fileIndex = openedFiles.findIndex((file) => file.name === fileName);
+              if (fileIndex === -1) {
+                const fileItem = document.createElement('div');
+                fileItem.classList.add('explorer-file');
+
+                // تحديث لتخطيط Flex
+                fileItem.style.display = 'flex';
+                fileItem.style.alignItems = 'center';
+
+                const fileNameElement = document.createElement('span');
+                fileNameElement.textContent = fileName;
+                fileNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم الملف
+                fileItem.appendChild(fileNameElement);
+
+                fileItem.onclick = () => {
+                  openFileByIndex(openedFiles.findIndex((file) => file.name === fileName));
+                };
+                explorerBody.appendChild(fileItem);
+
+                openedFiles.push({ name: fileName, content: content });
+
+                createTab(fileName);
+              } else {
+                openedFiles[fileIndex].content = content;
+              }
+              monacoEditor.setValue(content);
+              activeFileIndex = openedFiles.length - 1;
+              setActiveTab(activeFileIndex);
+            };
+            reader.readAsText(f);
+          });
+        }
+      }
+    }
+
+    function createTab(fileName) {
+      const tabBar = document.getElementById('editor-tabs');
+
+      // التحقق مما إذا كان الملف مفتوحًا بالفعل في التبويبات
+      const existingTab = Array.from(tabBar.children).find(
+        (tab) => tab.textContent === fileName
+      );
+
+      if (!existingTab) {
+        const tab = document.createElement('div');
+        tab.classList.add('tab');
+        tab.textContent = fileName;
+        tab.onclick = () => {
+          const fileIndex = openedFiles.findIndex((f) => f.name === fileName);
+          openFileByIndex(fileIndex);
+        };
+
+        // تحديث لتخطيط Flex
+        tab.style.display = 'flex';
+        tab.style.alignItems = 'center';
+
+        const fileNameElement = document.createElement('span');
+        fileNameElement.textContent = fileName;
+        fileNameElement.style.marginLeft = '8px'; // المسافة بين الصورة واسم الملف
+        tab.appendChild(fileNameElement);
+
+        tabBar.appendChild(tab);
+      }
+    }
+
+    function openFileByIndex(index) {
+      const file = openedFiles[index];
+      if (file) {
+        monacoEditor.setValue(file.content);
+        activeFileIndex = index;
+
+        // تحديث العلامة النشطة فقط دون إنشاء نسخ جديدة عند فتح الملف مرة أخرى
+        setActiveTab(activeFileIndex);
+      }
+    }
+
+    function setActiveTab(index) {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach((tab, i) => {
+        if (i === index) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+    }
+  </script>
 </body>
 </html>
-
