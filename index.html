@@ -83,6 +83,15 @@
       border: none;
       resize: none;
     }
+
+    /* تصميم الأزرار */
+    .ui.button.open-file,
+    .ui.button.open-folder,
+    .ui.button.create-folder {
+      background-color: #fff; /* لون الخلفية للأزرار */
+      color: #151515; /* لون النص في الأزرار */
+      margin-bottom: 5px;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.js"></script>
 </head>
@@ -93,9 +102,9 @@
         <div class="item">
           <div class="header">Explorer</div>
           <div class="menu">
-            <a class="item" onclick="openFile()">Open File</a>
-            <a class="item" onclick="openFolder()">Open Folder</a>
-            <a class="item" onclick="createNewFolder()">Create New Folder</a>
+            <button class="ui button open-file" onclick="openFile()">Open File</button>
+            <button class="ui button open-folder" onclick="openFolder()">Open Folder</button>
+            <button class="ui button create-folder" onclick="createNewFolder()">Create New Folder</button>
           </div>
         </div>
       </div>
